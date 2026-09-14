@@ -81,7 +81,7 @@ def capture_screenshots_at_intervals(video_path, output_dir="screenshots", inter
             print(f"Saved screenshot: {filename}")
 
         frame_count += 1
-        
+        # fjoivef veb;rbgeru
     cap.release()
     print(f"\nFinished! Total {saved_count} screenshots saved in '{output_dir}' folder.")
 
