@@ -1,0 +1,73 @@
+
+
+# import cv2
+# import numpy as np
+
+# def detect_cricket_ball_traditional(video_path):
+#     cap = cv2.VideoCapture(video_path)
+    
+#     print("Running color-filtered traditional circle tracking... Press 'q' to exit.")
+    
+#     while cap.isOpened():
+#         ret, frame = cap.read()
+#         if not ret:
+#             break
+            
+#         # Step 1: Convert frame to HSV color space (much better for color filtering than RGB/BGR)
+#         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        
+#         # Step 2: Define HSV color range for a red cricket ball
+#         # Note: Red wraps around the 0/180 mark in OpenCV, so we use two ranges or a tight primary range
+#         lower_red1 = np.array([0, 120, 70])
+#         upper_red1 = np.array([10, 255, 255])
+#         lower_red2 = np.array([170, 120, 70])
+#         upper_red2 = np.array([180, 255, 255])
+        
+#         mask1 = cv2.inRange(hsv, lower_red1, upper_red1)
+#         mask2 = cv2.inRange(hsv, lower_red2, upper_red2)
+#         color_mask = mask1 + mask2
+        
+#         # Step 3: Clean up noise using morphological operations (remove tiny specs, fill small holes)
+#         kernel = np.ones((3, 3), np.uint8)
+#         color_mask = cv2.erode(color_mask, kernel, iterations=1)
+#         color_mask = cv2.dilate(color_mask, kernel, iterations=2)
+        
+#         # Step 4: Apply Gaussian blur to smooth edges on the masked output
+#         blurred = cv2.GaussianBlur(color_mask, (9, 9), 2)
+        
+#         # Step 5: Run Hough Circle Transform strictly on the isolated color mask
+#         circles = cv2.HoughCircles(
+#             blurred,
+#             cv2.HOUGH_GRADIENT,
+#             dp=1.2,
+#             minDist=30,          
+#             param1=50,           
+#             param2=15,           # Lower threshold since our mask is already clean
+#             minRadius=4,         # Small cricket ball minimum pixel radius
+#             maxRadius=20         # Small cricket ball maximum pixel radius
+#         )
+        
+#         # Step 6: Draw any matched circles onto the original frame
+#         if circles is not None:
+#             circles = np.round(circles[0, :]).astype("int")
+#             for (x, y, r) in circles:
+#                 # Draw outer boundary
+#                 cv2.circle(frame, (x, y), r, (0, 255, 0), 2)
+#                 # Draw center target
+#                 cv2.circle(frame, (x, y), 2, (0, 0, 255), 3)
+#                 cv2.putText(frame, f"Ball ({x},{y})", (x - 25, y - r - 10), 
+#                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+        
+#         # Display the live preview and the mask side-by-side or individually
+#         cv2.imshow("Traditional Ball Tracking", cv2.resize(frame, (960, 540)))
+#         cv2.imshow("Color Mask (What the math sees)", cv2.resize(color_mask, (480, 270)))
+        
+#         if cv2.waitKey(25) & 0xFF == ord('q'):
+#             break
+            
+#     cap.release()
+#     cv2.destroyAllWindows()
+
+# if __name__ == "__main__":
+#     video_file = "lbw.mp4"
+#     detect_cricket_ball_traditional(video_file)
