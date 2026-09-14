@@ -88,3 +88,4 @@ def capture_screenshots_at_intervals(video_path, output_dir="screenshots", inter
 if __name__ == "__main__":
     video_file = "test.mp4"
     capture_screenshots_at_intervals(video_file, output_dir="ball_screenshots", interval_seconds=0.5)
+    # comment added for reference
